@@ -18,6 +18,7 @@
 <style>
 	:global(body) {
 		padding: 0;
+		font-family: "Poppins";
 	}
 </style>
 <Router {routes}/>
