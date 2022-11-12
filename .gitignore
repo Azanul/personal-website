@@ -1,4 +1,5 @@
-# /svelte-app/node_modules/
-# /svelte-app/public/build/
+/svelte-app/node_modules/
+/svelte-app/public/build/
 
-# .DS_Store
+.DS_Store
+.env
