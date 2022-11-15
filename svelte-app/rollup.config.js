@@ -7,6 +7,7 @@ import css from 'rollup-plugin-css-only';
 import rust from "@wasm-tool/rollup-plugin-rust";
 import {config} from 'dotenv';
 import replace from '@rollup/plugin-replace';
+import json from "@rollup/plugin-json";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -72,6 +73,7 @@ export default {
 			dedupe: ['svelte']
 		}),
 		commonjs(),
+		json(),
 
 		// Add the configuration for your wasm-tool plugins
 		// The generated .wasm file is placed in the /build/ folder.

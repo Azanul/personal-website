@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-json": "^5.0.1",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-replace": "^5.0.1",
     "@roxi/routify": "^2.18.5",
