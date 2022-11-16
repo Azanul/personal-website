@@ -1,9 +1,8 @@
 <nav class="hidden text-gray-500 uppercase text-bold sm:flex sm:justify-center space-x-4">
     <a href="/about" class="hover:text-gray-700 hover:no-underline">About</a>
-    <a href="/about" class="hover:text-gray-700 hover:no-underline bg-rose-600	">About</a>
-
-      <a href="/contact" class="hover:text-gray-700 hover:no-underline">Contact</a>
-  </nav>
+    <a href="/projects" class="hover:text-gray-700 hover:no-underline">Projects</a>
+    <a href="/contact" class="hover:text-gray-700 hover:no-underline">Contact</a>
+</nav>
 
 <style>
   a:after{
