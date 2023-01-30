@@ -1,0 +1,28 @@
+# baseURL = 'http://example.org/'
+# languageCode = 'en-us'
+# title = 'My New Hugo Site'
+
+theme = "lynx"
+title = "Lynx"
+color_theme = "ocean"
+enableEmoji = true
+disableKinds = ["taxonomy", "term"]
+
+[author]
+  name = "Azanul Haque"
+  headline = "A simple links theme for Hugo built with Tailwind CSS"
+  image = "author.jpg"
+  links = [
+    { linkedin = "https://www.linkedin.com/in/azanul-haque/" },
+    { hashnode = { href = "http://blog.azanulhaque.tech/", text = "Blog" }  },
+    { github = "https://github.com/Azanul" },
+    { twitter = "https://twitter.com/AzanulZ" },
+    { leetcode = { href = "https://leetcode.com/azanulhaque/", text = "Leetcode" } },
+  ]
+
+[markup.highlight]
+  noClasses = false
+
+[markup.goldmark]
+[markup.goldmark.renderer]
+  unsafe = true

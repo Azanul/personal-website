@@ -1,0 +1,3 @@
+[submodule "links/themes/lynx"]
+	path = links/themes/lynx
+	url = https://github.com/jpanther/lynx
