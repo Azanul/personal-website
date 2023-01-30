@@ -1,6 +1,0 @@
-/node_modules/
-/public/build/
-.routify
-/dist/build/
-
-.DS_Store
