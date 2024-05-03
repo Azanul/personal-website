@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack-dev-server",
+    "watch": "webpack --watch"
+  },
+  "dependencies": {
+    "copy-webpack-plugin": "^12.0.2",
+    "html-webpack-plugin": "^5.6.0",
+    "three": "^0.164.1",
+    "webpack": "^5.91.0",
+    "webpack-dev-server": "^5.0.4"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
+  },
+  "name": "personal-website",
+  "version": "1.0.0",
+  "main": "main.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
