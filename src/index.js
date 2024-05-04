@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import Resources from "./js/resources";
 import Car from "./js/car";
+import Floor from "./js/floor";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -36,11 +37,14 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-THREE.DefaultLoadingManager.onLoad = function ( ) {
-	console.log( 'Loading Complete!');
-	
-	car = new Car({ resources: resources });
-	scene.add( car.container )
+THREE.DefaultLoadingManager.onLoad = function () {
+    console.log("Loading Complete!");
 
-	animate();
+    car = new Car({ resources: resources });
+    scene.add(car.container);
+
+    let floor = new Floor();
+    scene.add(floor.container);
+
+    animate();
 };
