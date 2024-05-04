@@ -3,18 +3,24 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 import CarChassis from './models/car/chassis.glb';
-
 import CarWheel from './models/car/wheel.glb';
 
+import Car from './js/car';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 const loader = new GLTFLoader();
+
 var car;
+
+var chassis;
 loader.load( CarChassis, function ( gltf ) {
-	car = gltf.scene;
-	scene.add( car );
+	chassis = gltf.scene;
+	if (wheel !== undefined) {
+		car = new Car({chassis: chassis, wheel: wheel});
+		scene.add( car.container );
+	}
 }, undefined, function ( error ) {
 	console.error( error );
 } );
@@ -22,7 +28,10 @@ loader.load( CarChassis, function ( gltf ) {
 var wheel;
 loader.load( CarWheel, function ( gltf ) {
 	wheel = gltf.scene;
-	scene.add( wheel );
+	if (chassis !== undefined) {
+		car = new Car({chassis: chassis, wheel: wheel});
+		scene.add( car.container );
+	}
 }, undefined, function ( error ) {
 	console.error( error );
 } );
@@ -41,8 +50,8 @@ function animate() {
 	requestAnimationFrame( animate );
 
 	if (car !== undefined) {
-		car.rotation.x += 0.01;
-		car.rotation.y += 0.01;
+		car.container.rotation.x += 0.01;
+		car.container.rotation.y += 0.01;
 	}
 
 	renderer.render( scene, camera );
