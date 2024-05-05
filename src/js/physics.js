@@ -25,7 +25,7 @@ export default class Physics {
     }
 
     setEarth() {
-        this.earth.shape = new CANNON.Sphere(25)
+        this.earth.shape = new CANNON.Sphere(30)
         this.earth.body = new CANNON.Body({
             mass: 0,
             shape: this.earth.shape,
