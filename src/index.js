@@ -2,7 +2,8 @@ import * as THREE from "three";
 
 import Resources from "./js/resources";
 import Car from "./js/car";
-import Floor from "./js/floor";
+import Earth from "./js/earth";
+import Physics from "./js/physics";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -25,25 +26,37 @@ scene.add(sun);
 
 camera.position.z = 50;
 
+const clock = new THREE.Clock();
+
 const resources = new Resources();
 
 var car;
 
-function animate() {
-    requestAnimationFrame(animate);
-
-    renderer.render(scene, camera);
-}
-
 THREE.DefaultLoadingManager.onLoad = function () {
     console.log("Loading Complete!");
 
-	let floor = new Floor();
-    scene.add(floor.container);
-	
-    car = new Car({ resources: resources });
-	car.container.position.setY(16);
-    scene.add(car.container);
+    let earth = new Earth();
+
+    car = new Car({ camera: camera, renderer: renderer, resources: resources });
+    car.container.position.setY(16);
+
+    let physics = new Physics({ car, earth });
+    scene.add(physics.container);
+
+    let oldElapsedTime = 0;
+    function animate() {
+        const elapsedTime = clock.getElapsedTime();
+
+        physics.world.step(1 / 60, elapsedTime - oldElapsedTime, 3);
+        oldElapsedTime = elapsedTime;
+
+		physics.car.container.position.x = physics.car.chassis.body.position.x
+		physics.car.container.position.y = physics.car.chassis.body.position.y
+
+        requestAnimationFrame(animate);
+
+        renderer.render(scene, camera);
+    }
 
     animate();
 };

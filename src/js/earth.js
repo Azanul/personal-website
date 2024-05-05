@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export default class Floor {
+export default class Earth {
     constructor() {
         // Container
         this.container = new THREE.Object3D();
