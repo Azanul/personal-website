@@ -26,8 +26,6 @@ scene.add(sun)
 
 camera.position.z = 50
 
-const clock = new THREE.Clock()
-
 const resources = new Resources()
 
 var car
@@ -43,17 +41,10 @@ THREE.DefaultLoadingManager.onLoad = function () {
     let physics = new Physics({ car, earth })
     scene.add(physics.container)
 
-    let oldElapsedTime = 0
     function animate() {
-        const elapsedTime = clock.getElapsedTime()
-
-        physics.world.step(1 / 60, elapsedTime - oldElapsedTime, 3)
-        oldElapsedTime = elapsedTime
-
-        physics.car.container.position.x = physics.car.chassis.body.position.x
-        physics.car.container.position.y = physics.car.chassis.body.position.y
-
         requestAnimationFrame(animate)
+
+		physics.update()
 
         renderer.render(scene, camera)
     }

@@ -9,6 +9,8 @@ export default class Physics {
         this.container = new THREE.Object3D()
 
         this.world = new CANNON.World()
+        this.clock = new THREE.Clock()
+        this.oldElapsedTime = 0
 
         this.setWorld()
         this.setEarth()
@@ -47,5 +49,15 @@ export default class Physics {
 
         this.world.addBody(this.car.chassis.body)
         this.container.add(this.car.container)
+    }
+
+    update() {
+        const elapsedTime = this.clock.getElapsedTime()
+
+        this.world.step(1 / 60, elapsedTime - this.oldElapsedTime, 3)
+        this.oldElapsedTime = elapsedTime
+
+        this.car.container.position.x = this.car.chassis.body.position.x
+        this.car.container.position.y = this.car.chassis.body.position.y
     }
 }
