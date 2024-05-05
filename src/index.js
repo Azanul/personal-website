@@ -24,7 +24,9 @@ scene.add(light)
 const sun = new THREE.DirectionalLight(0x404040, 30)
 scene.add(sun)
 
-camera.position.z = 50
+camera.position.x = 5
+camera.position.y = 35
+camera.position.z = 5
 
 const resources = new Resources()
 
@@ -46,6 +48,9 @@ THREE.DefaultLoadingManager.onLoad = function () {
         requestAnimationFrame(animate)
 
 		physics.update()
+		// camera.position.y = car.container.y - 10
+
+		camera.lookAt(car.container.position)
 
         renderer.render(scene, camera)
     }

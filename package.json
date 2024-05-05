@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "webpack",
-    "dev": "webpack-dev-server",
+    "dev": "webpack-dev-server --mode development",
     "watch": "webpack --watch"
   },
   "dependencies": {
