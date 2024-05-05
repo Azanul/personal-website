@@ -34,6 +34,7 @@ THREE.DefaultLoadingManager.onLoad = function () {
     console.log("Loading Complete!")
 
     let earth = new Earth()
+	sun.target = earth.container
 
     car = new Car({ camera: camera, renderer: renderer, resources: resources })
     car.container.position.setY(16)
