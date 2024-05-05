@@ -17,10 +17,13 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const light = new THREE.AmbientLight(0x404040, 50);
+const light = new THREE.AmbientLight(0x404040, 10);
 scene.add(light);
 
-camera.position.z = 5;
+const sun = new THREE.DirectionalLight(0x404040, 30);
+scene.add(sun);
+
+camera.position.z = 50;
 
 const resources = new Resources();
 
@@ -29,22 +32,18 @@ var car;
 function animate() {
     requestAnimationFrame(animate);
 
-    if (car !== undefined) {
-        car.container.rotation.x += 0.01;
-        car.container.rotation.y += 0.01;
-    }
-
     renderer.render(scene, camera);
 }
 
 THREE.DefaultLoadingManager.onLoad = function () {
     console.log("Loading Complete!");
 
-    car = new Car({ resources: resources });
-    scene.add(car.container);
-
-    let floor = new Floor();
+	let floor = new Floor();
     scene.add(floor.container);
+	
+    car = new Car({ resources: resources });
+	car.container.position.setY(16);
+    scene.add(car.container);
 
     animate();
 };
