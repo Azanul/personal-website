@@ -1,5 +1,7 @@
 import * as THREE from "three"
 
+import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+
 import Resources from "./js/resources"
 import Car from "./js/car"
 import Earth from "./js/earth"
@@ -13,10 +15,13 @@ const camera = new THREE.PerspectiveCamera(
     1000
 )
 
-scene.background = new THREE.Color(0xfaa9a9)
+scene.background = new THREE.Color(0x87ceeb)
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
+
+const controls = new TrackballControls( camera, renderer.domElement );
+controls.target.set( 0, 0, 0 )
 
 const light = new THREE.AmbientLight(0x404040, 10)
 scene.add(light)
@@ -26,7 +31,7 @@ scene.add(sun)
 
 camera.position.x = 5
 camera.position.y = 35
-camera.position.z = 5
+camera.position.z = 25
 
 const resources = new Resources()
 
@@ -51,6 +56,7 @@ THREE.DefaultLoadingManager.onLoad = function () {
 		// camera.position.y = car.container.y - 10
 
 		camera.lookAt(car.container.position)
+		controls.update()
 
         renderer.render(scene, camera)
     }
