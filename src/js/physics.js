@@ -18,7 +18,7 @@ export default class Physics {
     }
 
     setWorld() {
-        this.world.gravity.set(0, -9.8, 0)
+        this.world.gravity.set(0, 0, 0)
         this.world.allowSleep = true
         this.world.defaultContactMaterial.friction = 0
         this.world.defaultContactMaterial.restitution = 0.2
@@ -59,5 +59,10 @@ export default class Physics {
 
         this.car.container.position.x = this.car.chassis.body.position.x
         this.car.container.position.y = this.car.chassis.body.position.y
+
+        this.world.bodies.forEach((b) => {
+            const force = new CANNON.Vec3(this.earth.body.position.x-b.position.x, this.earth.body.position.y-b.position.y, this.earth.body.position.z-b.position.z)
+            b.applyForce(force, b.position)
+        })
     }
 }

@@ -29,9 +29,7 @@ scene.add(light)
 const sun = new THREE.DirectionalLight(0x404040, 30)
 scene.add(sun)
 
-camera.position.x = 5
-camera.position.y = 35
-camera.position.z = 25
+camera.position.set(5, 35, 25)
 
 const resources = new Resources()
 
