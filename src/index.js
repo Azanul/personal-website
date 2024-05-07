@@ -1,6 +1,6 @@
 import * as THREE from "three"
 
-import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+import { TrackballControls } from "three/addons/controls/TrackballControls.js"
 
 import Resources from "./js/resources"
 import Car from "./js/car"
@@ -20,8 +20,8 @@ const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const controls = new TrackballControls( camera, renderer.domElement );
-controls.target.set( 0, 0, 0 )
+const controls = new TrackballControls(camera, renderer.domElement)
+controls.target.set(0, 0, 0)
 
 const light = new THREE.AmbientLight(0x404040, 10)
 scene.add(light)
@@ -39,7 +39,7 @@ THREE.DefaultLoadingManager.onLoad = function () {
     console.log("Loading Complete!")
 
     let earth = new Earth()
-	sun.target = earth.container
+    sun.target = earth.container
 
     car = new Car({ camera: camera, renderer: renderer, resources: resources })
     car.container.position.setY(16)
@@ -50,11 +50,11 @@ THREE.DefaultLoadingManager.onLoad = function () {
     function animate() {
         requestAnimationFrame(animate)
 
-		physics.update()
-		// camera.position.y = car.container.y - 10
+        physics.update()
+        // camera.position.y = car.container.y - 10
 
-		camera.lookAt(car.container.position)
-		controls.update()
+        camera.lookAt(car.container.position)
+        controls.update()
 
         renderer.render(scene, camera)
     }

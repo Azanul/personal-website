@@ -61,7 +61,11 @@ export default class Physics {
         this.car.container.position.y = this.car.chassis.body.position.y
 
         this.world.bodies.forEach((b) => {
-            const force = new CANNON.Vec3(this.earth.body.position.x-b.position.x, this.earth.body.position.y-b.position.y, this.earth.body.position.z-b.position.z)
+            const force = new CANNON.Vec3(
+                this.earth.body.position.x - b.position.x,
+                this.earth.body.position.y - b.position.y,
+                this.earth.body.position.z - b.position.z
+            )
             b.applyForce(force, b.position)
         })
     }
