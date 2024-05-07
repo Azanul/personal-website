@@ -37,8 +37,9 @@ export default class Physics {
     }
 
     setCar() {
+        console.log(this.car.wheel)
         this.car.chassis.shape = new CANNON.Box(
-            new CANNON.Vec3(2 * 0.5, 1 * 0.5, 1 * 0.5)
+            new CANNON.Vec3(this.car.chassis * 0.5, 1 * 0.5, 1 * 0.5)
         )
 
         this.car.chassis.body = new CANNON.Body({
