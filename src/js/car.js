@@ -22,17 +22,17 @@ export default class Car {
                 { x: 0, y: 3.14159, z: 0 },
             ], //Right Back
             [
-                { x: -0.1, y: 0, z: 0 },
+                { x: -1.1, y: 0, z: 0 },
                 { x: 0, y: 0, z: 0 },
-            ], //Left Front
+            ], //Left Back
             [
                 { x: 1.2, y: 0, z: 0 },
                 { x: 0, y: 3.14159, z: 0 },
             ], //Right Front
             [
-                { x: -1.1, y: 0, z: 0 },
+                { x: -0.1, y: 0, z: 0 },
                 { x: 0, y: 0, z: 0 },
-            ], //Left Back
+            ], //Left Front
         ]
 
         wheelPositions.forEach((posrot) => {
