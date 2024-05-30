@@ -1,11 +1,13 @@
 import * as THREE from "three"
 
 import { TrackballControls } from "three/addons/controls/TrackballControls.js"
+import CannonDebugger from 'cannon-es-debugger'
 
 import Resources from "./js/resources"
 import Car from "./js/car"
 import Earth from "./js/earth"
 import Physics from "./js/physics"
+import Controls from "./js/controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(
@@ -20,8 +22,8 @@ const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const controls = new TrackballControls(camera, renderer.domElement)
-controls.target.set(0, 0, 0)
+const cameraControls = new TrackballControls(camera, renderer.domElement)
+cameraControls.target.set(0, 0, 0)
 
 const light = new THREE.AmbientLight(0x404040, 10)
 scene.add(light)
@@ -29,7 +31,7 @@ scene.add(light)
 const sun = new THREE.DirectionalLight(0x404040, 30)
 scene.add(sun)
 
-camera.position.set(5, 35, 25)
+camera.position.set(5, 45, 45)
 
 const resources = new Resources()
 
@@ -44,8 +46,12 @@ THREE.DefaultLoadingManager.onLoad = function () {
     car = new Car({ camera: camera, renderer: renderer, resources: resources })
     car.container.position.setY(16)
 
-    let physics = new Physics({ car, earth })
+	let controls = new Controls({camera: camera})
+
+    let physics = new Physics({ car, earth, controls })
     scene.add(physics.container)
+
+	var cannonDebugRenderer = new CannonDebugger( scene, physics.world );
 
     function animate() {
         requestAnimationFrame(animate)
@@ -54,8 +60,9 @@ THREE.DefaultLoadingManager.onLoad = function () {
         // camera.position.y = car.container.y - 10
 
         camera.lookAt(car.container.position)
-        controls.update()
+        cameraControls.update()
 
+		cannonDebugRenderer.update()
         renderer.render(scene, camera)
     }
 

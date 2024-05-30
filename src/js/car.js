@@ -18,30 +18,38 @@ export default class Car {
     setWheels() {
         const wheelPositions = [
             [
-                { x: 0.2, y: 0, z: 0 },
+                "RB",
+                { x: -0.5, y: 0, z: 0.5 },
                 { x: 0, y: 3.14159, z: 0 },
             ], //Right Back
-            [
-                { x: -1.1, y: 0, z: 0 },
-                { x: 0, y: 0, z: 0 },
-            ], //Left Back
-            [
-                { x: 1.2, y: 0, z: 0 },
-                { x: 0, y: 3.14159, z: 0 },
-            ], //Right Front
-            [
-                { x: -0.1, y: 0, z: 0 },
-                { x: 0, y: 0, z: 0 },
-            ], //Left Front
+            // [
+            //     "LB",
+            //     { x: -1.1, y: 0, z: 0 },
+            //     { x: 0, y: 0, z: 0 },
+            // ], //Left Back
+            // [
+            //     "RF",
+            //     { x: 1.2, y: 0, z: 1 },
+            //     { x: 0, y: 3.14159, z: 0 },
+            // ], //Right Front
+            // [
+            //     "LF",
+            //     { x: -0.1, y: 0, z: 0 },
+            //     { x: 0, y: 0, z: 0 },
+            // ], //Left Front
         ]
 
         wheelPositions.forEach((posrot) => {
-            const position = posrot[0]
-            const rotation = posrot[1]
+            const side = posrot[0]
+            const position = posrot[1]
+            const rotation = posrot[2]
+            
             const wheelMesh = this.wheel.model.clone()
-            wheelMesh.position.set(position.x, position.y, position.z)
+            
+            wheelMesh.position.copy(position)
             wheelMesh.rotation.set(rotation.x, rotation.y, rotation.z)
-            this.container.add(wheelMesh)
+            
+            this.wheel[side] = wheelMesh
         })
     }
 }
