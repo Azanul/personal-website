@@ -104,12 +104,6 @@ export default class Physics {
 
         for (const key in this.car.wheel) {
             if (key !== "model") {
-                this.car.wheel[key].body = new CANNON.Body({
-                    mass: 5,
-                    shape: wheelShape,
-                    position: this.car.wheel[key].position,
-                })
-
                 this.container.add(this.car.wheel[key])
             }
         }
@@ -147,9 +141,6 @@ export default class Physics {
             if (key !== "model") {
                 this.car.vehicle.updateWheelTransform(i)
                 var t = this.car.vehicle.wheelInfos[i].worldTransform
-
-                this.car.wheel[key].body.position.copy(t.position)
-                this.car.wheel[key].body.quaternion.copy(t.quaternion)
 
                 this.car.wheel[key].position.copy(t.position)
                 this.car.wheel[key].quaternion.copy(t.quaternion)
