@@ -21,14 +21,14 @@ export default class Physics {
     setWorld() {
         this.world.gravity.set(0, 0, 0)
         this.world.allowSleep = true
-        this.world.defaultContactMaterial.friction = 0
-        this.world.defaultContactMaterial.restitution = 0.2
+        this.world.defaultContactMaterial.friction = 1
+        this.world.defaultContactMaterial.restitution = 0
     }
 
     setEarth() {
         this.earth.shape = new CANNON.Sphere(30)
         this.earth.body = new CANNON.Body({
-            mass: 0,
+            type: CANNON.Body.STATIC,
             shape: this.earth.shape,
             material: new CANNON.ContactMaterial("floorMaterial"),
         })
@@ -50,7 +50,6 @@ export default class Physics {
             position: new CANNON.Vec3(0, 30, 0),
         })
 
-        this.world.addBody(this.car.chassis.body)
         this.container.add(this.car.container)
 
         box = new THREE.Box3().setFromObject(this.car.wheel.model)
@@ -61,15 +60,57 @@ export default class Physics {
             size.z * 0.5,
             20
         )
+
+        this.car.vehicle = new CANNON.RaycastVehicle({
+            chassisBody: this.car.chassis.body,
+            indexRightAxis: 2,
+            indexUpAxis: 0,
+            indexForwardAxis: 1,
+        })
+
+        this.car.wheels = {}
+        this.car.wheels.options = {
+            radius: size.x * 0.5,
+            height: size.z * 0.5,
+            suspensionStiffness: 20,
+			suspensionRestLength: 0.2,
+			maxSuspensionTravel: 1,
+			frictionSlip: 0.8,
+			dampingRelaxation: 2,
+			dampingCompression: 2,
+			rollInfluence: 0.8,
+            directionLocal: new CANNON.Vec3(0, -1, 0),
+            axleLocal: new CANNON.Vec3(-1, 0, 0),
+            chassisConnectionPointLocal: new CANNON.Vec3(),
+        }
+
+        // Front left
+        this.car.wheels.options.chassisConnectionPointLocal.set(1, 0, -1)
+        this.car.vehicle.addWheel(this.car.wheels.options)
+
+        // Front right
+        this.car.wheels.options.chassisConnectionPointLocal.set(-1, 0, -1)
+        this.car.vehicle.addWheel(this.car.wheels.options)
+
+        // Back left
+        this.car.wheels.options.chassisConnectionPointLocal.set(1, 0, 1)
+        this.car.vehicle.addWheel(this.car.wheels.options)
+
+        // Back right
+        this.car.wheels.options.chassisConnectionPointLocal.set(-1, 0, 1)
+        this.car.vehicle.addWheel(this.car.wheels.options)
+
+        this.car.vehicle.addToWorld(this.world)
+
         for (const key in this.car.wheel) {
             if (key !== "model") {
                 this.car.wheel[key].body = new CANNON.Body({
                     mass: 5,
                     shape: wheelShape,
-                    position: new CANNON.Vec3(0, 100, 0),
+                    position: this.car.wheel[key].position,
                 })
 
-                this.world.addBody(this.car.wheel[key].body)
+                this.container.add(this.car.wheel[key])
             }
         }
     }
@@ -80,9 +121,17 @@ export default class Physics {
         this.oldElapsedTime = elapsedTime
 
         if (this.controls.actions.up) {
-            console.log("up")
-            this.car.wheel.RF.rotateOnAxis(new THREE.Vector3(0, 0, 1), 1)
-            this.car.wheel.LF.rotateOnAxis(new THREE.Vector3(0, 0, 1), 1)
+            this.car.vehicle.applyEngineForce(50, 0)
+            this.car.vehicle.applyEngineForce(50, 1)
+            this.car.vehicle.applyEngineForce(50, 2)
+            this.car.vehicle.applyEngineForce(50, 3)
+        }
+
+        if (this.controls.actions.down) {
+            this.car.vehicle.applyEngineForce(-50, 0)
+            this.car.vehicle.applyEngineForce(-50, 1)
+            this.car.vehicle.applyEngineForce(-50, 2)
+            this.car.vehicle.applyEngineForce(-50, 3)
         }
 
         this.car.container.position.copy(this.car.chassis.body.position)
@@ -92,6 +141,22 @@ export default class Physics {
             this.car.chassis.body.quaternion.z,
             this.car.chassis.body.quaternion.w
         )
+
+        var i = 0
+        for (const key in this.car.wheel) {
+            if (key !== "model") {
+                this.car.vehicle.updateWheelTransform(i)
+                var t = this.car.vehicle.wheelInfos[i].worldTransform
+
+                this.car.wheel[key].body.position.copy(t.position)
+                this.car.wheel[key].body.quaternion.copy(t.quaternion)
+
+                this.car.wheel[key].position.copy(t.position)
+                this.car.wheel[key].quaternion.copy(t.quaternion)
+
+                i++
+            }
+        }
 
         this.world.bodies.forEach((b) => {
             const force = new CANNON.Vec3(
