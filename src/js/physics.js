@@ -135,6 +135,20 @@ export default class Physics {
             this.car.vehicle.applyEngineForce(-50, 3)
         }
 
+        if (this.controls.actions.left) {
+            this.car.vehicle.setSteeringValue(-50, 0)
+            this.car.vehicle.setSteeringValue(-50, 1)
+            this.car.vehicle.setSteeringValue(-50, 2)
+            this.car.vehicle.setSteeringValue(-50, 3)
+        }
+
+        if (this.controls.actions.right) {
+            this.car.vehicle.setSteeringValue(50, 0)
+            this.car.vehicle.setSteeringValue(50, 1)
+            this.car.vehicle.setSteeringValue(50, 2)
+            this.car.vehicle.setSteeringValue(50, 3)
+        }
+
         this.car.container.position.copy(this.car.chassis.body.position)
         this.car.container.quaternion.set(
             this.car.chassis.body.quaternion.x,
