@@ -13,6 +13,9 @@ export default class Physics {
         this.clock = new THREE.Clock()
         this.oldElapsedTime = 0
 
+        this.groundMaterial = new CANNON.Material("ground")
+        this.wheelMaterial = new CANNON.Material("wheel")
+
         this.setWorld()
         this.setEarth()
         this.setCar()
@@ -23,6 +26,17 @@ export default class Physics {
         this.world.allowSleep = true
         this.world.defaultContactMaterial.friction = 0.4
         this.world.defaultContactMaterial.restitution = 0.5
+
+        const wheel_ground = new CANNON.ContactMaterial(
+            this.wheelMaterial,
+            this.groundMaterial,
+            {
+                friction: 0.3,
+                restitution: 0,
+                contactEquationStiffness: 1000,
+            }
+        )
+        this.world.addContactMaterial(wheel_ground)
     }
 
     setEarth() {
@@ -30,7 +44,7 @@ export default class Physics {
         this.earth.body = new CANNON.Body({
             type: CANNON.Body.STATIC,
             shape: this.earth.shape,
-            material: new CANNON.ContactMaterial("floorMaterial"),
+            material: this.groundMaterial,
         })
 
         this.world.addBody(this.earth.body)
@@ -107,7 +121,9 @@ export default class Physics {
             let wheelBody = new CANNON.Body({
                 mass: 0,
                 shape: wheelShape,
-                // type: CANNON.Body.KINEMATIC
+                material: this.wheelMaterial,
+                type: CANNON.Body.KINEMATIC,
+                collisionFilterGroup: 0
             })
             this.car.wheel.body.push(wheelBody)
 
@@ -123,9 +139,9 @@ export default class Physics {
 
         if (this.controls.actions.up) {
             this.car.vehicle.applyEngineForce(50, 0)
-            // this.car.vehicle.applyEngineForce(50, 1)
-            // this.car.vehicle.applyEngineForce(50, 2)
-            // this.car.vehicle.applyEngineForce(50, 3)
+            this.car.vehicle.applyEngineForce(50, 1)
+            this.car.vehicle.applyEngineForce(50, 2)
+            this.car.vehicle.applyEngineForce(50, 3)
         }
 
         if (this.controls.actions.down) {
