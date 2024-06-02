@@ -122,15 +122,13 @@ export default class Physics {
         this.oldElapsedTime = elapsedTime
 
         if (this.controls.actions.up) {
-            console.log("up")
-            this.car.vehicle.applyEngineForce(500, 0)
+            this.car.vehicle.applyEngineForce(50, 0)
             // this.car.vehicle.applyEngineForce(50, 1)
             // this.car.vehicle.applyEngineForce(50, 2)
             // this.car.vehicle.applyEngineForce(50, 3)
         }
 
         if (this.controls.actions.down) {
-            console.log("down")
             // this.car.vehicle.applyEngineForce(-50, 0)
             // this.car.vehicle.applyEngineForce(-50, 1)
             // this.car.vehicle.applyEngineForce(-50, 2)
@@ -149,6 +147,13 @@ export default class Physics {
             this.car.vehicle.setSteeringValue(50, 1)
             this.car.vehicle.setSteeringValue(50, 2)
             this.car.vehicle.setSteeringValue(50, 3)
+        }
+
+        if (this.controls.actions.brake) {
+            this.car.vehicle.setBrake(25, 0)
+            this.car.vehicle.setBrake(25, 1)
+            this.car.vehicle.setBrake(25, 2)
+            this.car.vehicle.setBrake(25, 3)
         }
 
         this.car.container.position.copy(this.car.chassis.body.position)
