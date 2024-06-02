@@ -73,12 +73,12 @@ export default class Physics {
             radius: size.x * 0.5,
             height: size.z * 0.5,
             suspensionStiffness: 5,
-			suspensionRestLength: 0.5,
-			maxSuspensionTravel: 0.1,
-			frictionSlip: 0,
-			dampingRelaxation: 2,
-			dampingCompression: 2,
-			rollInfluence: 0.01,
+            suspensionRestLength: 0.5,
+            maxSuspensionTravel: 0.1,
+            frictionSlip: 0,
+            dampingRelaxation: 2,
+            dampingCompression: 2,
+            rollInfluence: 0.01,
             directionLocal: new CANNON.Vec3(0, -1, 0),
             axleLocal: new CANNON.Vec3(-1, 0, 0),
             chassisConnectionPointLocal: new CANNON.Vec3(),
@@ -102,18 +102,18 @@ export default class Physics {
 
         this.car.vehicle.addToWorld(this.world)
 
-        for (const key in this.car.wheel) {
-            if (key !== "model") {
-                this.car.wheel[key].body = new CANNON.Body({
-                    mass: 0,
-                    shape: wheelShape,
-                    position: this.car.wheel[key].position,
-                })
+        this.car.wheel.body = []
+        this.car.vehicle.wheelInfos.forEach((wheel, i) => {
+            let wheelBody = new CANNON.Body({
+                mass: 0,
+                shape: wheelShape,
+                // type: CANNON.Body.KINEMATIC
+            })
+            this.car.wheel.body.push(wheelBody)
 
-                this.world.addBody(this.car.wheel[key].body)
-                this.container.add(this.car.wheel[key])
-            }
-        }
+            this.world.addBody(wheelBody)
+            this.container.add(this.car.wheel.visuals[i])
+        })
     }
 
     update() {
@@ -122,16 +122,18 @@ export default class Physics {
         this.oldElapsedTime = elapsedTime
 
         if (this.controls.actions.up) {
-            this.car.vehicle.applyEngineForce(50, 0)
-            this.car.vehicle.applyEngineForce(50, 1)
-            this.car.vehicle.applyEngineForce(50, 2)
-            this.car.vehicle.applyEngineForce(50, 3)
+            console.log("up")
+            this.car.vehicle.applyEngineForce(500, 0)
+            // this.car.vehicle.applyEngineForce(50, 1)
+            // this.car.vehicle.applyEngineForce(50, 2)
+            // this.car.vehicle.applyEngineForce(50, 3)
         }
 
         if (this.controls.actions.down) {
-            this.car.vehicle.applyEngineForce(-50, 0)
-            this.car.vehicle.applyEngineForce(-50, 1)
-            this.car.vehicle.applyEngineForce(-50, 2)
+            console.log("down")
+            // this.car.vehicle.applyEngineForce(-50, 0)
+            // this.car.vehicle.applyEngineForce(-50, 1)
+            // this.car.vehicle.applyEngineForce(-50, 2)
             this.car.vehicle.applyEngineForce(-50, 3)
         }
 
@@ -150,37 +152,29 @@ export default class Physics {
         }
 
         this.car.container.position.copy(this.car.chassis.body.position)
-        this.car.container.quaternion.set(
-            this.car.chassis.body.quaternion.x,
-            this.car.chassis.body.quaternion.y,
-            this.car.chassis.body.quaternion.z,
-            this.car.chassis.body.quaternion.w
-        )
+        this.car.container.quaternion.copy(this.car.chassis.body.quaternion)
 
-        var i = 0
-        for (const key in this.car.wheel) {
-            if (key !== "model") {
-                this.car.vehicle.updateWheelTransform(i)
-                var t = this.car.vehicle.wheelInfos[i].worldTransform
+        for (let i = 0; i < this.car.vehicle.wheelInfos.length; i++) {
+            this.car.vehicle.updateWheelTransform(i)
+            var t = this.car.vehicle.wheelInfos[i].worldTransform
 
-                this.car.wheel[key].body.position.copy(t.position)
-                this.car.wheel[key].body.quaternion.copy(t.quaternion)
+            this.car.wheel.body[i].position.copy(t.position)
+            this.car.wheel.body[i].quaternion.copy(t.quaternion)
 
-                this.car.wheel[key].position.copy(t.position)
-                this.car.wheel[key].quaternion.copy(t.quaternion)
-
-                i++
-            }
+            this.car.wheel.visuals[i].position.copy(t.position)
+            this.car.wheel.visuals[i].quaternion.copy(t.quaternion)
         }
 
         this.world.bodies.forEach((b) => {
             const force = new CANNON.Vec3()
-            force.set(
-                this.earth.body.position.x - b.position.x,
-                this.earth.body.position.y - b.position.y,
-                this.earth.body.position.z - b.position.z
-            ).normalize()
-            
+            force
+                .set(
+                    this.earth.body.position.x - b.position.x,
+                    this.earth.body.position.y - b.position.y,
+                    this.earth.body.position.z - b.position.z
+                )
+                .normalize()
+
             force.scale(9.8, b.force)
             b.applyLocalForce(force, b.position)
         })

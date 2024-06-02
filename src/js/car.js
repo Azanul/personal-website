@@ -16,13 +16,12 @@ export default class Car {
     }
 
     setWheels() {
-        const wheelPositions = ["RB", "LB", "RF", "LF"]
-
-        wheelPositions.forEach((posrot) => {
+        this.wheel.visuals = []
+        for(var i = 0; i < 4; i++) {
             const wheelMesh = this.wheel.model.clone()
-
-            this.wheel[posrot] = wheelMesh
+            
+            this.wheel.visuals.push(wheelMesh)
             this.container.add(wheelMesh)
-        })
+        }
     }
 }
