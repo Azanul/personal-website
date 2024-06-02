@@ -21,8 +21,8 @@ export default class Physics {
     setWorld() {
         this.world.gravity.set(0, 0, 0)
         this.world.allowSleep = true
-        this.world.defaultContactMaterial.friction = 1
-        this.world.defaultContactMaterial.restitution = 0
+        this.world.defaultContactMaterial.friction = 0.4
+        this.world.defaultContactMaterial.restitution = 0.5
     }
 
     setEarth() {
@@ -41,7 +41,7 @@ export default class Physics {
         let box = new THREE.Box3().setFromObject(this.car.chassis.model)
         let size = box.getSize(new THREE.Vector3())
         this.car.chassis.shape = new CANNON.Box(
-            new CANNON.Vec3(size.x * 0.5, size.y * 0.5, size.z * 0.5)
+            new CANNON.Vec3(size.x * 0.5, size.y * 0.2, size.z * 0.35)
         )
 
         this.car.chassis.body = new CANNON.Body({
@@ -72,38 +72,45 @@ export default class Physics {
         this.car.wheels.options = {
             radius: size.x * 0.5,
             height: size.z * 0.5,
-            suspensionStiffness: 20,
-			suspensionRestLength: 0.2,
-			maxSuspensionTravel: 1,
-			frictionSlip: 0.8,
+            suspensionStiffness: 5,
+			suspensionRestLength: 0.5,
+			maxSuspensionTravel: 0.1,
+			frictionSlip: 0,
 			dampingRelaxation: 2,
 			dampingCompression: 2,
-			rollInfluence: 0.8,
+			rollInfluence: 0.01,
             directionLocal: new CANNON.Vec3(0, -1, 0),
             axleLocal: new CANNON.Vec3(-1, 0, 0),
             chassisConnectionPointLocal: new CANNON.Vec3(),
         }
 
         // Front left
-        this.car.wheels.options.chassisConnectionPointLocal.set(1, 0, -1)
-        this.car.vehicle.addWheel(this.car.wheels.options)
-
-        // Front right
-        this.car.wheels.options.chassisConnectionPointLocal.set(-1, 0, -1)
+        this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, -0.75)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
         // Back left
-        this.car.wheels.options.chassisConnectionPointLocal.set(1, 0, 1)
+        this.car.wheels.options.chassisConnectionPointLocal.set(-0.5, 0, -0.75)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
         // Back right
-        this.car.wheels.options.chassisConnectionPointLocal.set(-1, 0, 1)
+        this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, 0.75)
+        this.car.vehicle.addWheel(this.car.wheels.options)
+
+        // Front right
+        this.car.wheels.options.chassisConnectionPointLocal.set(-0.5, 0, 0.75)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
         this.car.vehicle.addToWorld(this.world)
 
         for (const key in this.car.wheel) {
             if (key !== "model") {
+                this.car.wheel[key].body = new CANNON.Body({
+                    mass: 0,
+                    shape: wheelShape,
+                    position: this.car.wheel[key].position,
+                })
+
+                this.world.addBody(this.car.wheel[key].body)
                 this.container.add(this.car.wheel[key])
             }
         }
@@ -142,6 +149,9 @@ export default class Physics {
                 this.car.vehicle.updateWheelTransform(i)
                 var t = this.car.vehicle.wheelInfos[i].worldTransform
 
+                this.car.wheel[key].body.position.copy(t.position)
+                this.car.wheel[key].body.quaternion.copy(t.quaternion)
+
                 this.car.wheel[key].position.copy(t.position)
                 this.car.wheel[key].quaternion.copy(t.quaternion)
 
@@ -150,12 +160,15 @@ export default class Physics {
         }
 
         this.world.bodies.forEach((b) => {
-            const force = new CANNON.Vec3(
+            const force = new CANNON.Vec3()
+            force.set(
                 this.earth.body.position.x - b.position.x,
                 this.earth.body.position.y - b.position.y,
                 this.earth.body.position.z - b.position.z
-            )
-            b.applyForce(force, b.position)
+            ).normalize()
+            
+            force.scale(9.8, b.force)
+            b.applyLocalForce(force, b.position)
         })
     }
 }
