@@ -68,12 +68,6 @@ export default class Physics {
 
         box = new THREE.Box3().setFromObject(this.car.wheel.model)
         size = box.getSize(new THREE.Vector3())
-        let wheelShape = new CANNON.Cylinder(
-            size.x * 0.5,
-            size.y * 0.5,
-            size.z * 0.5,
-            20
-        )
 
         this.car.vehicle = new CANNON.RaycastVehicle({
             chassisBody: this.car.chassis.body,
@@ -118,12 +112,18 @@ export default class Physics {
 
         this.car.wheel.body = []
         this.car.vehicle.wheelInfos.forEach((wheel, i) => {
+            let wheelShape = new CANNON.Cylinder(
+                wheel.radius,
+                wheel.radius,
+                wheel.radius * 0.5,
+                20
+            )
+
             let wheelBody = new CANNON.Body({
                 mass: 0,
                 shape: wheelShape,
                 material: this.wheelMaterial,
-                type: CANNON.Body.KINEMATIC,
-                collisionFilterGroup: 0
+                type: CANNON.Body.STATIC,
             })
             this.car.wheel.body.push(wheelBody)
 
@@ -138,31 +138,31 @@ export default class Physics {
         this.oldElapsedTime = elapsedTime
 
         if (this.controls.actions.up) {
-            this.car.vehicle.applyEngineForce(50, 0)
-            this.car.vehicle.applyEngineForce(50, 1)
-            this.car.vehicle.applyEngineForce(50, 2)
-            this.car.vehicle.applyEngineForce(50, 3)
+            this.car.vehicle.applyEngineForce(this.car.engineForce, 0)
+            this.car.vehicle.applyEngineForce(this.car.engineForce, 1)
+            this.car.vehicle.applyEngineForce(this.car.engineForce, 2)
+            this.car.vehicle.applyEngineForce(this.car.engineForce, 3)
         }
 
         if (this.controls.actions.down) {
-            // this.car.vehicle.applyEngineForce(-50, 0)
-            // this.car.vehicle.applyEngineForce(-50, 1)
-            // this.car.vehicle.applyEngineForce(-50, 2)
-            this.car.vehicle.applyEngineForce(-50, 3)
+            this.car.vehicle.applyEngineForce(-this.car.engineForce, 0)
+            this.car.vehicle.applyEngineForce(-this.car.engineForce, 1)
+            this.car.vehicle.applyEngineForce(-this.car.engineForce, 2)
+            this.car.vehicle.applyEngineForce(-this.car.engineForce, 3)
         }
 
         if (this.controls.actions.left) {
-            this.car.vehicle.setSteeringValue(-50, 0)
-            this.car.vehicle.setSteeringValue(-50, 1)
-            this.car.vehicle.setSteeringValue(-50, 2)
-            this.car.vehicle.setSteeringValue(-50, 3)
+            this.car.vehicle.setSteeringValue(-this.car.streeringValue, 0)
+            this.car.vehicle.setSteeringValue(-this.car.streeringValue, 1)
+            this.car.vehicle.setSteeringValue(-this.car.streeringValue, 2)
+            this.car.vehicle.setSteeringValue(-this.car.streeringValue, 3)
         }
 
         if (this.controls.actions.right) {
-            this.car.vehicle.setSteeringValue(50, 0)
-            this.car.vehicle.setSteeringValue(50, 1)
-            this.car.vehicle.setSteeringValue(50, 2)
-            this.car.vehicle.setSteeringValue(50, 3)
+            this.car.vehicle.setSteeringValue(this.car.streeringValue, 0)
+            this.car.vehicle.setSteeringValue(this.car.streeringValue, 1)
+            this.car.vehicle.setSteeringValue(this.car.streeringValue, 2)
+            this.car.vehicle.setSteeringValue(this.car.streeringValue, 3)
         }
 
         if (this.controls.actions.brake) {
