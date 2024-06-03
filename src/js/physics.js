@@ -88,7 +88,7 @@ export default class Physics {
             dampingCompression: 2,
             rollInfluence: 0.01,
             directionLocal: new CANNON.Vec3(0, -1, 0),
-            axleLocal: new CANNON.Vec3(-1, 0, 0),
+            axleLocal: new CANNON.Vec3(0, 0, 1),
             chassisConnectionPointLocal: new CANNON.Vec3(),
         }
 
@@ -123,7 +123,7 @@ export default class Physics {
                 mass: 0,
                 shape: wheelShape,
                 material: this.wheelMaterial,
-                type: CANNON.Body.STATIC,
+                type: CANNON.Body.KINEMATIC,
             })
             this.car.wheel.body.push(wheelBody)
 
