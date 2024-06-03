@@ -152,17 +152,17 @@ export default class Physics {
         }
 
         if (this.controls.actions.left) {
-            this.car.vehicle.setSteeringValue(-this.car.streeringValue, 0)
-            this.car.vehicle.setSteeringValue(-this.car.streeringValue, 1)
-            this.car.vehicle.setSteeringValue(-this.car.streeringValue, 2)
-            this.car.vehicle.setSteeringValue(-this.car.streeringValue, 3)
+            this.car.vehicle.setSteeringValue(-this.car.steeringValue, 0)
+            this.car.vehicle.setSteeringValue(-this.car.steeringValue, 1)
+            this.car.vehicle.setSteeringValue(-this.car.steeringValue, 2)
+            this.car.vehicle.setSteeringValue(-this.car.steeringValue, 3)
         }
 
         if (this.controls.actions.right) {
-            this.car.vehicle.setSteeringValue(this.car.streeringValue, 0)
-            this.car.vehicle.setSteeringValue(this.car.streeringValue, 1)
-            this.car.vehicle.setSteeringValue(this.car.streeringValue, 2)
-            this.car.vehicle.setSteeringValue(this.car.streeringValue, 3)
+            this.car.vehicle.setSteeringValue(this.car.steeringValue, 0)
+            this.car.vehicle.setSteeringValue(this.car.steeringValue, 1)
+            this.car.vehicle.setSteeringValue(this.car.steeringValue, 2)
+            this.car.vehicle.setSteeringValue(this.car.steeringValue, 3)
         }
 
         if (this.controls.actions.brake) {

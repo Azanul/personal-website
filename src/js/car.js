@@ -6,7 +6,7 @@ export default class Car {
         this.renderer = _options.renderer
 
         this.engineForce = 1000
-        this.streeringValue = 90
+        this.steeringValue = 90
 
         this.container = new THREE.Object3D()
 
