@@ -16,6 +16,9 @@ export default class Physics {
         this.groundMaterial = new CANNON.Material("ground")
         this.wheelMaterial = new CANNON.Material("wheel")
 
+        this.engineForce = 0
+        this.steeringValue = 0
+
         this.setWorld()
         this.setEarth()
         this.setCar()
@@ -150,31 +153,35 @@ export default class Physics {
         this.oldElapsedTime = elapsedTime
 
         if (this.controls.actions.up) {
-            this.car.vehicle.applyEngineForce(this.car.engineForce, 0)
-            this.car.vehicle.applyEngineForce(this.car.engineForce, 1)
-            this.car.vehicle.applyEngineForce(this.car.engineForce, 2)
-            this.car.vehicle.applyEngineForce(this.car.engineForce, 3)
+            this.engineForce = Math.min(this.engineForce + 5, this.car.maxEngineForce)
+            this.car.vehicle.applyEngineForce(this.engineForce, 0)
+            this.car.vehicle.applyEngineForce(this.engineForce, 1)
+            this.car.vehicle.applyEngineForce(this.engineForce, 2)
+            this.car.vehicle.applyEngineForce(this.engineForce, 3)
         }
 
         if (this.controls.actions.down) {
-            this.car.vehicle.applyEngineForce(-this.car.engineForce, 0)
-            this.car.vehicle.applyEngineForce(-this.car.engineForce, 1)
-            this.car.vehicle.applyEngineForce(-this.car.engineForce, 2)
-            this.car.vehicle.applyEngineForce(-this.car.engineForce, 3)
+            this.engineForce = Math.max(this.engineForce - 5, -this.car.maxEngineForce)
+            this.car.vehicle.applyEngineForce(this.engineForce, 0)
+            this.car.vehicle.applyEngineForce(this.engineForce, 1)
+            this.car.vehicle.applyEngineForce(this.engineForce, 2)
+            this.car.vehicle.applyEngineForce(this.engineForce, 3)
         }
 
         if (this.controls.actions.left) {
-            this.car.vehicle.setSteeringValue(-this.car.steeringValue, 0)
-            this.car.vehicle.setSteeringValue(-this.car.steeringValue, 1)
-            this.car.vehicle.setSteeringValue(-this.car.steeringValue, 2)
-            this.car.vehicle.setSteeringValue(-this.car.steeringValue, 3)
+            this.steeringValue = Math.max(this.steeringValue - 0.05, -this.car.maxSteeringValue)
+            this.car.vehicle.setSteeringValue(this.steeringValue, 0)
+            this.car.vehicle.setSteeringValue(this.steeringValue, 1)
+            this.car.vehicle.setSteeringValue(this.steeringValue, 2)
+            this.car.vehicle.setSteeringValue(this.steeringValue, 3)
         }
 
         if (this.controls.actions.right) {
-            this.car.vehicle.setSteeringValue(this.car.steeringValue, 0)
-            this.car.vehicle.setSteeringValue(this.car.steeringValue, 1)
-            this.car.vehicle.setSteeringValue(this.car.steeringValue, 2)
-            this.car.vehicle.setSteeringValue(this.car.steeringValue, 3)
+            this.steeringValue = Math.min(this.steeringValue + 0.05, this.car.maxSteeringValue)
+            this.car.vehicle.setSteeringValue(this.steeringValue, 0)
+            this.car.vehicle.setSteeringValue(this.steeringValue, 1)
+            this.car.vehicle.setSteeringValue(this.steeringValue, 2)
+            this.car.vehicle.setSteeringValue(this.steeringValue, 3)
         }
 
         if (this.controls.actions.brake) {

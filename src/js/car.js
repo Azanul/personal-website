@@ -5,8 +5,8 @@ export default class Car {
         this.camera = _options.camera
         this.renderer = _options.renderer
 
-        this.engineForce = 1000
-        this.steeringValue = 90
+        this.maxEngineForce = 250
+        this.maxSteeringValue = Math.PI / 3
 
         this.container = new THREE.Object3D()
 
