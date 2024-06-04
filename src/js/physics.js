@@ -19,6 +19,7 @@ export default class Physics {
         this.setWorld()
         this.setEarth()
         this.setCar()
+        this.setupEventlisteners()
     }
 
     setWorld() {
@@ -92,19 +93,15 @@ export default class Physics {
             chassisConnectionPointLocal: new CANNON.Vec3(),
         }
 
-        // Front left
         this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, -0.75)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
-        // Back left
         this.car.wheels.options.chassisConnectionPointLocal.set(-0.5, 0, -0.75)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
-        // Back right
         this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, 0.75)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
-        // Front right
         this.car.wheels.options.chassisConnectionPointLocal.set(-0.5, 0, 0.75)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
@@ -129,6 +126,21 @@ export default class Physics {
 
             this.world.addBody(wheelBody)
             this.container.add(this.car.wheel.visuals[i])
+        })
+    }
+
+    setupEventlisteners() {
+        this.world.addEventListener("postStep", () => {
+            for (let i = 0; i < this.car.vehicle.wheelInfos.length; i++) {
+                this.car.vehicle.updateWheelTransform(i)
+                var t = this.car.vehicle.wheelInfos[i].worldTransform
+
+                this.car.wheel.body[i].position.copy(t.position)
+                this.car.wheel.body[i].quaternion.copy(t.quaternion)
+
+                this.car.wheel.visuals[i].position.copy(t.position)
+                this.car.wheel.visuals[i].quaternion.copy(t.quaternion)
+            }
         })
     }
 
@@ -174,17 +186,6 @@ export default class Physics {
 
         this.car.container.position.copy(this.car.chassis.body.position)
         this.car.container.quaternion.copy(this.car.chassis.body.quaternion)
-
-        for (let i = 0; i < this.car.vehicle.wheelInfos.length; i++) {
-            this.car.vehicle.updateWheelTransform(i)
-            var t = this.car.vehicle.wheelInfos[i].worldTransform
-
-            this.car.wheel.body[i].position.copy(t.position)
-            this.car.wheel.body[i].quaternion.copy(t.quaternion)
-
-            this.car.wheel.visuals[i].position.copy(t.position)
-            this.car.wheel.visuals[i].quaternion.copy(t.quaternion)
-        }
 
         this.world.bodies.forEach((b) => {
             const force = new CANNON.Vec3()
