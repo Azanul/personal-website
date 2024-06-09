@@ -96,16 +96,16 @@ export default class Physics {
             chassisConnectionPointLocal: new CANNON.Vec3(),
         }
 
-        this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, -0.75)
+        this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, -0.5)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
-        this.car.wheels.options.chassisConnectionPointLocal.set(-0.5, 0, -0.75)
+        this.car.wheels.options.chassisConnectionPointLocal.set(-0.5, 0, -0.5)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
-        this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, 0.75)
+        this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, 0.5)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
-        this.car.wheels.options.chassisConnectionPointLocal.set(-0.5, 0, 0.75)
+        this.car.wheels.options.chassisConnectionPointLocal.set(-0.5, 0, 0.5)
         this.car.vehicle.addWheel(this.car.wheels.options)
 
         this.car.vehicle.addToWorld(this.world)
