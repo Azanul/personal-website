@@ -169,19 +169,15 @@ export default class Physics {
         }
 
         if (this.controls.actions.left) {
-            this.steeringValue = Math.max(this.steeringValue - 0.05, -this.car.maxSteeringValue)
+            this.steeringValue = Math.min(this.steeringValue + 0.05, this.car.maxSteeringValue)
             this.car.vehicle.setSteeringValue(this.steeringValue, 0)
-            this.car.vehicle.setSteeringValue(this.steeringValue, 1)
             this.car.vehicle.setSteeringValue(this.steeringValue, 2)
-            this.car.vehicle.setSteeringValue(this.steeringValue, 3)
         }
 
         if (this.controls.actions.right) {
-            this.steeringValue = Math.min(this.steeringValue + 0.05, this.car.maxSteeringValue)
+            this.steeringValue = Math.max(this.steeringValue - 0.05, -this.car.maxSteeringValue)
             this.car.vehicle.setSteeringValue(this.steeringValue, 0)
-            this.car.vehicle.setSteeringValue(this.steeringValue, 1)
             this.car.vehicle.setSteeringValue(this.steeringValue, 2)
-            this.car.vehicle.setSteeringValue(this.steeringValue, 3)
         }
 
         if (this.controls.actions.brake) {
