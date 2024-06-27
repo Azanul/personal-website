@@ -149,9 +149,7 @@ export default class Physics {
             this.world.addBody(wheelBody)
             this.container.add(this.car.wheel.visuals[i])
         })
-    }
 
-    setupEventlisteners() {
         this.world.addEventListener("postStep", () => {
             for (let i = 0; i < this.car.vehicle.wheelInfos.length; i++) {
                 this.car.vehicle.updateWheelTransform(i)
