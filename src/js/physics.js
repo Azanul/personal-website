@@ -36,11 +36,30 @@ export default class Physics {
             this.groundMaterial,
             {
                 friction: 0.3,
-                restitution: 0,
+                restitution: 0.5,
                 contactEquationStiffness: 1000,
             }
         )
         this.world.addContactMaterial(wheel_ground)
+
+        this.world.addEventListener('postStep', () => {
+            this.world.bodies.forEach((b) => {
+                if (b == this.earth.body) {
+                    return
+                }
+                const force = new CANNON.Vec3()
+                force
+                    .set(
+                        this.earth.body.position.x - b.position.x,
+                        this.earth.body.position.y - b.position.y,
+                        this.earth.body.position.z - b.position.z
+                    )
+                    .normalize()
+                force.scale(9.8, b.force)
+                b.applyLocalForce(force, b.position)
+            })
+        })
+
     }
 
     setEarth() {
@@ -189,19 +208,5 @@ export default class Physics {
 
         this.car.container.position.copy(this.car.chassis.body.position)
         this.car.container.quaternion.copy(this.car.chassis.body.quaternion)
-
-        this.world.bodies.forEach((b) => {
-            const force = new CANNON.Vec3()
-            force
-                .set(
-                    this.earth.body.position.x - b.position.x,
-                    this.earth.body.position.y - b.position.y,
-                    this.earth.body.position.z - b.position.z
-                )
-                .normalize()
-
-            force.scale(9.8, b.force)
-            b.applyLocalForce(force, b.position)
-        })
     }
 }
