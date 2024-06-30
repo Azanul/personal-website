@@ -1,7 +1,7 @@
 import * as THREE from "three"
 
 import { TrackballControls } from "three/addons/controls/TrackballControls.js"
-import CannonDebugger from 'cannon-es-debugger'
+import CannonDebugger from "cannon-es-debugger"
 
 import Resources from "./js/resources"
 import Car from "./js/car"
@@ -11,10 +11,10 @@ import Controls from "./js/controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(
-    75,
+    24,
     window.innerWidth / window.innerHeight,
-    0.1,
-    1000
+    5,
+    2000
 )
 
 scene.background = new THREE.Color(0x87ceeb)
@@ -31,7 +31,7 @@ scene.add(light)
 const sun = new THREE.DirectionalLight(0x404040, 30)
 scene.add(sun)
 
-camera.position.set(5, 45, 45)
+camera.position.set(100, 100, 100)
 
 const resources = new Resources()
 
@@ -44,7 +44,6 @@ THREE.DefaultLoadingManager.onLoad = function () {
     sun.target = earth.container
 
     car = new Car({ camera: camera, renderer: renderer, resources: resources })
-    car.container.position.setY(16)
 
 	let controls = new Controls({camera: camera})
 

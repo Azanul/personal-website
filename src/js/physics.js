@@ -18,25 +18,24 @@ export default class Physics {
 
         this.engineForce = 0
         this.steeringValue = 0
+        this.brakeForce = 0
 
         this.setWorld()
         this.setEarth()
         this.setCar()
-        this.setupEventlisteners()
     }
 
     setWorld() {
         this.world.gravity.set(0, 0, 0)
-        this.world.allowSleep = true
-        this.world.defaultContactMaterial.friction = 0.4
-        this.world.defaultContactMaterial.restitution = 0.5
+        this.world.defaultContactMaterial.friction = 0
+        this.world.broadphase = new CANNON.SAPBroadphase(this.world)
 
         const wheel_ground = new CANNON.ContactMaterial(
             this.wheelMaterial,
             this.groundMaterial,
             {
                 friction: 0.3,
-                restitution: 0.5,
+                restitution: 0,
                 contactEquationStiffness: 1000,
             }
         )
@@ -55,7 +54,7 @@ export default class Physics {
                         this.earth.body.position.z - b.position.z
                     )
                     .normalize()
-                force.scale(9.8, b.force)
+                force.scale(50, b.force)
                 b.applyLocalForce(force, b.position)
             })
         })
@@ -75,6 +74,10 @@ export default class Physics {
     }
 
     setCar() {
+        this.car.maxEngineForce = 20
+        this.car.maxSteeringValue = 0.5
+        this.car.maxBrakeForce = 30
+
         let box = new THREE.Box3().setFromObject(this.car.chassis.model)
         let size = box.getSize(new THREE.Vector3())
         this.car.chassis.shape = new CANNON.Box(
@@ -85,6 +88,8 @@ export default class Physics {
             mass: 20,
             shape: this.car.chassis.shape,
             position: new CANNON.Vec3(0, 30, 0),
+            linearDamping: 0.5,
+            angularDamping: 0.5,
         })
 
         this.container.add(this.car.container)
@@ -95,24 +100,27 @@ export default class Physics {
         this.car.vehicle = new CANNON.RaycastVehicle({
             chassisBody: this.car.chassis.body,
             indexRightAxis: 2,
-            indexUpAxis: 0,
-            indexForwardAxis: 1,
+            indexForwardAxis: 0,
+            indexUpAxis: 1
         })
 
         this.car.wheels = {}
         this.car.wheels.options = {
             radius: size.x * 0.5,
             height: size.z * 0.5,
-            suspensionStiffness: 5,
+            suspensionStiffness: 30,
             suspensionRestLength: 0.5,
-            maxSuspensionTravel: 0.1,
-            frictionSlip: 0,
-            dampingRelaxation: 2,
-            dampingCompression: 2,
+            maxSuspensionForce: 100000,
+            maxSuspensionTravel: 0.3,
+            frictionSlip: 1.4,
+            dampingRelaxation: 2.3,
+            dampingCompression: 4.4,
             rollInfluence: 0.01,
             directionLocal: new CANNON.Vec3(0, -1, 0),
             axleLocal: new CANNON.Vec3(0, 0, 1),
             chassisConnectionPointLocal: new CANNON.Vec3(),
+            customSlidingRotationalSpeed: -30,
+            useCustomSlidingRotationalSpeed: true,
         }
 
         this.car.wheels.options.chassisConnectionPointLocal.set(0.5, 0, -0.5)
@@ -131,19 +139,21 @@ export default class Physics {
 
         this.car.wheel.body = []
         this.car.vehicle.wheelInfos.forEach((wheel, i) => {
-            let wheelShape = new CANNON.Cylinder(
+            const wheelShape = new CANNON.Cylinder(
                 wheel.radius,
                 wheel.radius,
                 wheel.radius * 0.5,
                 20
             )
 
-            let wheelBody = new CANNON.Body({
+            const wheelBody = new CANNON.Body({
                 mass: 0,
-                shape: wheelShape,
                 material: this.wheelMaterial,
                 type: CANNON.Body.KINEMATIC,
+                collisionFilterGroup: 0,
             })
+            const quaternion = new CANNON.Quaternion().setFromEuler(0, 0, 0)
+            wheelBody.addShape(wheelShape, new CANNON.Vec3(), quaternion)
             this.car.wheel.body.push(wheelBody)
 
             this.world.addBody(wheelBody)
@@ -153,7 +163,7 @@ export default class Physics {
         this.world.addEventListener("postStep", () => {
             for (let i = 0; i < this.car.vehicle.wheelInfos.length; i++) {
                 this.car.vehicle.updateWheelTransform(i)
-                var t = this.car.vehicle.wheelInfos[i].worldTransform
+                const t = this.car.vehicle.wheelInfos[i].worldTransform
 
                 this.car.wheel.body[i].position.copy(t.position)
                 this.car.wheel.body[i].quaternion.copy(t.quaternion)
@@ -171,17 +181,14 @@ export default class Physics {
 
         if (this.controls.actions.up) {
             this.engineForce = Math.min(this.engineForce + 5, this.car.maxEngineForce)
-            this.car.vehicle.applyEngineForce(this.engineForce, 0)
             this.car.vehicle.applyEngineForce(this.engineForce, 1)
-            this.car.vehicle.applyEngineForce(this.engineForce, 2)
             this.car.vehicle.applyEngineForce(this.engineForce, 3)
+
         }
 
         if (this.controls.actions.down) {
             this.engineForce = Math.max(this.engineForce - 5, -this.car.maxEngineForce)
-            this.car.vehicle.applyEngineForce(this.engineForce, 0)
             this.car.vehicle.applyEngineForce(this.engineForce, 1)
-            this.car.vehicle.applyEngineForce(this.engineForce, 2)
             this.car.vehicle.applyEngineForce(this.engineForce, 3)
         }
 
@@ -198,10 +205,11 @@ export default class Physics {
         }
 
         if (this.controls.actions.brake) {
-            this.car.vehicle.setBrake(25, 0)
-            this.car.vehicle.setBrake(25, 1)
-            this.car.vehicle.setBrake(25, 2)
-            this.car.vehicle.setBrake(25, 3)
+            this.brakeForce = Math.min(this.brakeForce + 0.01, this.car.maxBrakeForce);
+            this.car.vehicle.setBrake(this.brakeForce, 0)
+            this.car.vehicle.setBrake(this.brakeForce, 1)
+            this.car.vehicle.setBrake(this.brakeForce, 2)
+            this.car.vehicle.setBrake(this.brakeForce, 3)
         }
 
         this.car.container.position.copy(this.car.chassis.body.position)

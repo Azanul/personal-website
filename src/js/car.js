@@ -5,9 +5,6 @@ export default class Car {
         this.camera = _options.camera
         this.renderer = _options.renderer
 
-        this.maxEngineForce = 250
-        this.maxSteeringValue = Math.PI / 3
-
         this.container = new THREE.Object3D()
 
         this.chassis = { model: _options.resources.items.carChassis }
