@@ -6,7 +6,7 @@ export default class Earth {
         this.container = new THREE.Object3D()
 
         // Geometry
-        const geometry = new THREE.SphereGeometry(30, 8, 8)
+        const geometry = new THREE.SphereGeometry(30, 15, 15)
         const material = new THREE.ShaderMaterial({
             uniforms: {
                 color1: {
