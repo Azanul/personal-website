@@ -5,7 +5,6 @@ export default class Physics {
     constructor(_options) {
         this.car = _options.car
         this.earth = _options.earth
-        this.controls = _options.controls
 
         this.container = new THREE.Object3D()
 
@@ -23,6 +22,7 @@ export default class Physics {
         this.setWorld()
         this.setEarth()
         this.setCar()
+        this.setControls()
     }
 
     setWorld() {
@@ -41,7 +41,7 @@ export default class Physics {
         )
         this.world.addContactMaterial(wheel_ground)
 
-        this.world.addEventListener('postStep', () => {
+        this.world.addEventListener("postStep", () => {
             this.world.bodies.forEach((b) => {
                 if (b == this.earth.body) {
                     return
@@ -58,7 +58,6 @@ export default class Physics {
                 b.applyLocalForce(force, b.position)
             })
         })
-
     }
 
     setEarth() {
@@ -101,7 +100,7 @@ export default class Physics {
             chassisBody: this.car.chassis.body,
             indexRightAxis: 2,
             indexForwardAxis: 0,
-            indexUpAxis: 1
+            indexUpAxis: 1,
         })
 
         this.car.wheels = {}
@@ -179,40 +178,117 @@ export default class Physics {
         this.world.step(1 / 60, elapsedTime - this.oldElapsedTime, 3)
         this.oldElapsedTime = elapsedTime
 
-        if (this.controls.actions.up) {
-            this.engineForce = Math.min(this.engineForce + 5, this.car.maxEngineForce)
-            this.car.vehicle.applyEngineForce(this.engineForce, 1)
-            this.car.vehicle.applyEngineForce(this.engineForce, 3)
-
-        }
-
-        if (this.controls.actions.down) {
-            this.engineForce = Math.max(this.engineForce - 5, -this.car.maxEngineForce)
-            this.car.vehicle.applyEngineForce(this.engineForce, 1)
-            this.car.vehicle.applyEngineForce(this.engineForce, 3)
-        }
-
-        if (this.controls.actions.left) {
-            this.steeringValue = Math.min(this.steeringValue + 0.05, this.car.maxSteeringValue)
-            this.car.vehicle.setSteeringValue(this.steeringValue, 0)
-            this.car.vehicle.setSteeringValue(this.steeringValue, 2)
-        }
-
-        if (this.controls.actions.right) {
-            this.steeringValue = Math.max(this.steeringValue - 0.05, -this.car.maxSteeringValue)
-            this.car.vehicle.setSteeringValue(this.steeringValue, 0)
-            this.car.vehicle.setSteeringValue(this.steeringValue, 2)
-        }
-
-        if (this.controls.actions.brake) {
-            this.brakeForce = Math.min(this.brakeForce + 0.01, this.car.maxBrakeForce);
-            this.car.vehicle.setBrake(this.brakeForce, 0)
-            this.car.vehicle.setBrake(this.brakeForce, 1)
-            this.car.vehicle.setBrake(this.brakeForce, 2)
-            this.car.vehicle.setBrake(this.brakeForce, 3)
-        }
-
         this.car.container.position.copy(this.car.chassis.body.position)
         this.car.container.quaternion.copy(this.car.chassis.body.quaternion)
+    }
+
+    setControls() {
+        this.keyboard = {}
+        this.keyboard.events = {}
+
+        this.keyboard.events.keyDown = (_event) => {
+            switch (_event.code) {
+                case "ArrowUp":
+                case "KeyW":
+                    this.engineForce = Math.min(
+                        this.engineForce + 5,
+                        this.car.maxEngineForce
+                    )
+                    this.car.vehicle.applyEngineForce(this.engineForce, 1)
+                    this.car.vehicle.applyEngineForce(this.engineForce, 3)
+                    break
+
+                case "ArrowRight":
+                case "KeyD":
+                    this.steeringValue = Math.max(
+                        this.steeringValue - 0.05,
+                        -this.car.maxSteeringValue
+                    )
+                    this.car.vehicle.setSteeringValue(this.steeringValue, 0)
+                    this.car.vehicle.setSteeringValue(this.steeringValue, 2)
+                    break
+
+                case "ArrowDown":
+                case "KeyS":
+                    this.engineForce = Math.max(
+                        this.engineForce - 5,
+                        -this.car.maxEngineForce
+                    )
+                    this.car.vehicle.applyEngineForce(this.engineForce, 1)
+                    this.car.vehicle.applyEngineForce(this.engineForce, 3)
+                    break
+
+                case "ArrowLeft":
+                case "KeyA":
+                    this.steeringValue = Math.min(
+                        this.steeringValue + 0.05,
+                        this.car.maxSteeringValue
+                    )
+                    this.car.vehicle.setSteeringValue(this.steeringValue, 0)
+                    this.car.vehicle.setSteeringValue(this.steeringValue, 2)
+                    break
+
+                case "ControlLeft":
+                case "ControlRight":
+                case "Space":
+                    this.brakeForce = Math.min(
+                        this.brakeForce + 0.01,
+                        this.car.maxBrakeForce
+                    )
+                    this.car.vehicle.setBrake(this.brakeForce, 0)
+                    this.car.vehicle.setBrake(this.brakeForce, 1)
+                    this.car.vehicle.setBrake(this.brakeForce, 2)
+                    this.car.vehicle.setBrake(this.brakeForce, 3)
+                    break
+
+                case "ShiftLeft":
+                case "ShiftRight":
+                    break
+            }
+        }
+
+        this.keyboard.events.keyUp = (_event) => {
+            switch (_event.code) {
+                case "ArrowUp":
+                case "KeyW":
+                    this.car.vehicle.applyEngineForce(0, 1)
+                    this.car.vehicle.applyEngineForce(0, 3)
+                    break
+
+                case "ArrowRight":
+                case "KeyD":
+                    break
+
+                case "ArrowDown":
+                case "KeyS":
+                    this.car.vehicle.applyEngineForce(0, 1)
+                    this.car.vehicle.applyEngineForce(0, 3)
+                    break
+
+                case "ArrowLeft":
+                case "KeyA":
+                    break
+
+                case "ControlLeft":
+                case "ControlRight":
+                case "Space":
+                    this.car.vehicle.setBrake(0, 0)
+                    this.car.vehicle.setBrake(0, 1)
+                    this.car.vehicle.setBrake(0, 2)
+                    this.car.vehicle.setBrake(0, 3)
+                    break
+
+                case "ShiftLeft":
+                case "ShiftRight":
+                    break
+
+                case "KeyR":
+                    this.trigger("action", ["reset"])
+                    break
+            }
+        }
+        
+        document.addEventListener("keydown", this.keyboard.events.keyDown)
+        document.addEventListener("keyup", this.keyboard.events.keyUp)
     }
 }

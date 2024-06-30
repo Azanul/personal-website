@@ -7,7 +7,6 @@ import Resources from "./js/resources"
 import Car from "./js/car"
 import Earth from "./js/earth"
 import Physics from "./js/physics"
-import Controls from "./js/controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(
@@ -45,9 +44,7 @@ THREE.DefaultLoadingManager.onLoad = function () {
 
     car = new Car({ camera: camera, renderer: renderer, resources: resources })
 
-	let controls = new Controls({camera: camera})
-
-    let physics = new Physics({ car, earth, controls })
+    let physics = new Physics({ car, earth })
     scene.add(physics.container)
 
 	var cannonDebugRenderer = new CannonDebugger( scene, physics.world );
