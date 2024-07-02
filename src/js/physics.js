@@ -54,7 +54,7 @@ export default class Physics {
                         this.earth.body.position.z - b.position.z
                     )
                     .normalize()
-                force.scale(50, b.force)
+                force.scale(75, b.force)
                 b.applyLocalForce(force, b.position)
             })
         })
@@ -74,7 +74,7 @@ export default class Physics {
 
     setCar() {
         this.car.maxEngineForce = 20
-        this.car.maxSteeringValue = 0.5
+        this.car.maxSteeringValue = 0.6
         this.car.maxBrakeForce = 30
 
         let box = new THREE.Box3().setFromObject(this.car.chassis.model)
@@ -201,7 +201,7 @@ export default class Physics {
                 case "ArrowRight":
                 case "KeyD":
                     this.steeringValue = Math.max(
-                        this.steeringValue - 0.05,
+                        this.steeringValue - 0.2,
                         -this.car.maxSteeringValue
                     )
                     this.car.vehicle.setSteeringValue(this.steeringValue, 0)
@@ -221,7 +221,7 @@ export default class Physics {
                 case "ArrowLeft":
                 case "KeyA":
                     this.steeringValue = Math.min(
-                        this.steeringValue + 0.05,
+                        this.steeringValue + 0.2,
                         this.car.maxSteeringValue
                     )
                     this.car.vehicle.setSteeringValue(this.steeringValue, 0)
@@ -287,7 +287,7 @@ export default class Physics {
                     break
             }
         }
-        
+
         document.addEventListener("keydown", this.keyboard.events.keyDown)
         document.addEventListener("keyup", this.keyboard.events.keyUp)
     }
